@@ -1,20 +1,8 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router";
-
-const EyeIcon = ({ open }: { open: boolean }) => open ? (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-         fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-        <circle cx="12" cy="12" r="3"/>
-    </svg>
-) : (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-         fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-        <line x1="1" y1="1" x2="23" y2="23"/>
-    </svg>
-);
+import PasswordInput from "../components/PasswordInput";
+import PhotoInput from "../components/PhotoInput";
+import TextInput from "../components/TextInput";
 
 const RegisterPage = () => {
     const navigate = useNavigate();
@@ -22,8 +10,7 @@ const RegisterPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [photo, setPhoto] = useState<File | null>(null);
     const [acceptedTerms, setAcceptedTerms] = useState(false);
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -83,93 +70,57 @@ const RegisterPage = () => {
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        <PhotoInput
+                            id="photo"
+                            label="Фото профілю"
+                            value={photo}
+                            onChange={setPhoto}
+                        />
+
+                        <TextInput
+                            id="name"
+                            type="text"
+                            label="Ім'я"
+                            value={name}
+                            onChange={e => setName(e.target.value)}
+                            placeholder="Ваше ім'я"
+                            autoComplete="name"
+                            required
+                        />
+
+                        <TextInput
+                            id="email"
+                            type="email"
+                            label="Електронна пошта"
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                            placeholder="name@example.com"
+                            autoComplete="email"
+                            required
+                        />
+
+                        <PasswordInput
+                            id="password"
+                            label="Пароль"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                            placeholder="Мінімум 8 символів"
+                            autoComplete="new-password"
+                            minLength={8}
+                            required
+                        />
+
                         <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-                                Ім'я
-                            </label>
-                            <input
-                                id="name"
-                                type="text"
-                                value={name}
-                                onChange={e => setName(e.target.value)}
-                                placeholder="Ваше ім'я"
-                                autoComplete="name"
+                            <PasswordInput
+                                id="confirmPassword"
+                                label="Повторіть пароль"
+                                value={confirmPassword}
+                                onChange={e => setConfirmPassword(e.target.value)}
+                                placeholder="Повторіть пароль"
+                                autoComplete="new-password"
+                                error={passwordsDoNotMatch}
                                 required
-                                className="w-full px-4 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:border-indigo-400 dark:focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/20 dark:focus:ring-indigo-500/20 transition-all duration-200"
                             />
-                        </div>
-
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-                                Електронна пошта
-                            </label>
-                            <input
-                                id="email"
-                                type="email"
-                                value={email}
-                                onChange={e => setEmail(e.target.value)}
-                                placeholder="name@example.com"
-                                autoComplete="email"
-                                required
-                                className="w-full px-4 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:border-indigo-400 dark:focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/20 dark:focus:ring-indigo-500/20 transition-all duration-200"
-                            />
-                        </div>
-
-                        <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-                                Пароль
-                            </label>
-                            <div className="relative">
-                                <input
-                                    id="password"
-                                    type={showPassword ? "text" : "password"}
-                                    value={password}
-                                    onChange={e => setPassword(e.target.value)}
-                                    placeholder="Мінімум 8 символів"
-                                    autoComplete="new-password"
-                                    minLength={8}
-                                    required
-                                    className="w-full px-4 py-2.5 pr-11 rounded-xl text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:border-indigo-400 dark:focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400/20 dark:focus:ring-indigo-500/20 transition-all duration-200"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(v => !v)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150"
-                                    aria-label={showPassword ? "Сховати пароль" : "Показати пароль"}
-                                >
-                                    <EyeIcon open={showPassword} />
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-                                Повторіть пароль
-                            </label>
-                            <div className="relative">
-                                <input
-                                    id="confirmPassword"
-                                    type={showConfirmPassword ? "text" : "password"}
-                                    value={confirmPassword}
-                                    onChange={e => setConfirmPassword(e.target.value)}
-                                    placeholder="Повторіть пароль"
-                                    autoComplete="new-password"
-                                    required
-                                    className={`w-full px-4 py-2.5 pr-11 rounded-xl text-sm bg-slate-50 dark:bg-slate-800 border text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:ring-2 transition-all duration-200 ${
-                                        passwordsDoNotMatch
-                                            ? "border-rose-300 dark:border-rose-500 focus:border-rose-400 focus:ring-rose-400/20"
-                                            : "border-slate-200 dark:border-slate-700 focus:border-indigo-400 dark:focus:border-indigo-500 focus:ring-indigo-400/20 dark:focus:ring-indigo-500/20"
-                                    }`}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowConfirmPassword(v => !v)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150"
-                                    aria-label={showConfirmPassword ? "Сховати пароль" : "Показати пароль"}
-                                >
-                                    <EyeIcon open={showConfirmPassword} />
-                                </button>
-                            </div>
                             {passwordsDoNotMatch && (
                                 <p className="mt-1.5 text-xs text-rose-500 dark:text-rose-400">
                                     Паролі не збігаються
