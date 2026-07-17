@@ -1,4 +1,4 @@
-package org.example;
+﻿package org.example;
 
 import java.util.Scanner;
 
@@ -149,3 +149,4 @@ public class Main {
         scanner.close();
     }
 }
+
